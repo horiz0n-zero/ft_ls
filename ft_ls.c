@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:59:10 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 13:59:12 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/03 22:23:02 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,11 @@ static void			ft_restrict_print(t_info *array, int count, t_flag flag)
 	while (save-- > 0)
 	{
 		if (LENI(array->path) > flag.len)
-			flag.len = LENI(array->path);
+			flag.len = LENI(array->path) + 1;
 		array++;
 	}
-	line = size.ws_col / flag.len;
+	if (flag.len != 0 && size.ws_col != 0)
+		line = size.ws_col / flag.len;
 	array = array - count;
 	ft_pb(array, count, flag, size.ws_col);
 }
@@ -49,8 +50,7 @@ static void			ft_print_arguments(t_info *array, int count, t_flag f)
 	ft_restrict_print(array, count, f);
 	while (count-- > 0)
 	{
-		if (S_ISDIR(array->mode) && array->path[0] == '.' &&
-				array->path[1] == '.')
+		if (S_ISDIR(array->mode) && array->path[0] == '.')
 		{
 			ft_launch(array->fullpath, f, 0);
 			continue ;
@@ -95,14 +95,12 @@ int					main(int argc, char **argv)
 
 	path = NULL;
 	flag.self = 0;
+	flag.set = 1;
+	printf("\e[1m");
 	if (argc > 1)
 		path = ft_parse_param(++argv, &flag);
 	if (path != NULL)
-	{
 		ft_arguments(path, flag, argc);
-	}
 	else
-	{
-		ft_launch(".", flag, 0);
-	}
+		ft_launch(".", flag, 1);
 }

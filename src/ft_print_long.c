@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:59:48 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 13:59:50 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/03 17:33:10 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void			ft_file_type(const mode_t mode)
 	else if (S_ISCHR(mode))
 		printf("c");
 	else if (S_ISDIR(mode))
-		printf("\033[1;34md");
+		printf("d");
 	else if (S_ISFIFO(mode))
 		printf("p");
 	else if (S_ISLNK(mode))
@@ -64,11 +64,33 @@ static char			*ft_time(char *str)
 	return (ptr);
 }
 
+static void			ft_color(mode_t mode)
+{
+	if (S_ISBLK(mode))
+		printf("\e[1;32m");
+	else if (S_ISCHR(mode))
+		printf("\e[1;32m");
+	else if (S_ISDIR(mode))
+		printf("\033[1;34m");
+	else if (S_ISFIFO(mode))
+		printf("\e[1;35m");
+	else if (S_ISLNK(mode))
+		printf("\e[1;36m");
+	else if (S_ISREG(mode))
+		return ;
+	else if (S_ISSOCK(mode))
+		printf("\e[1;97m");
+	else
+		printf("\e[1;32m");
+}
+
 void			ft_print_l(t_info info)
 {
 	ft_file_type(info.mode);
 	ft_permission(info.mode);
 	printf(" %3d %s ", info.link, getpwuid(info.uid)->pw_name);
 	printf("%7s %6lld", getgrgid(info.gid)->gr_name, info.size);
-	printf(" %s %s\e[37m\n", ft_time(ctime(&info.time)), info.path);
+	printf(" %s ", ft_time(ctime(&info.time)));
+	ft_color(info.mode);
+	printf("%s\e[37m\n", info.path);
 }

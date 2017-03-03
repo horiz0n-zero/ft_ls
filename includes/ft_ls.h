@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:00 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 13:59:18 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/03 15:38:26 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef union	u_flag
 		char	r:1;
 		char	t:1;
 		int		len;
+		char	set;
 	};
 }				t_flag;
 
@@ -67,7 +68,7 @@ typedef struct	s_global
 
 void			ft_launch(const char *path, t_flag flag, const int set);
 int				ft_opend(const char *path, DIR *reper, t_flag flag, int n);
-void			ft_print_directory(t_info *array, int count, t_flag flag);
+void			ft_print_directory(t_info *a, int c, t_flag f);
 void			ft_open_r(const t_info *array, int n, t_flag f);
 char			*ft_strjoin(const char *s1, const char *s2);
 char			*ft_sstrjoin(const char *s1, const char *s2);

@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:57 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 13:59:01 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/03 22:48:57 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ void					ft_launch(const char *path, t_flag flag, const int set)
 		return ;
 	}
 	if (set)
-		printf("\e[34m%s :\n\e[37m", path);
+		;
+	else
+		printf("\n\n\e[34m%s :\n\e[37m", path);
 	while (ft_opend(path, reper, flag, size))
 	{
 		size *= 2;
@@ -56,7 +58,9 @@ void					ft_open_r(const t_info *array, int n, t_flag f)
 	{
 		if (S_ISDIR(array->mode) && !(*array->path == '.' &&
 			(array->path[1] == '.' || !array->path[1])))
-			ft_launch(array->fullpath, f, 1);
+		{
+			ft_launch(array->fullpath, f, 0);
+		}
 		array++;
 	}
 }
@@ -72,14 +76,17 @@ int						ft_opend(const char *path, DIR *rep, t_flag flag, int n)
 	while ((tmp = readdir(rep)))
 	{
 		if (stat(ft_stc_sstrjoin(path, tmp->d_name), &chat) == -1)
+		{
+			printf("%s : Permission denied\n", path);
 			continue ;
+		}
 		if (*tmp->d_name == '.' && !flag.a)
 			continue ;
 		array[index].path = ft_copy(tmp->d_name);
 		array[index].fullpath = ft_sstrjoin(path, tmp->d_name);
 		ft_fill(&array[index], chat);
 		if (LENI(array[index].path) > flag.len)
-			flag.len = LENI(array[index].path);
+			flag.len = LENI(array[index].path) + 1;
 		if (++index >= n)
 			return (1);
 	}

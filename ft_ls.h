@@ -65,7 +65,7 @@ int				ft_strlen_i(const char *str);
 char			*ft_stc_sstrjoin(const char *s1, const char *s2);
 # define LENS(str) ft_strlen_s(str)
 # define LENI(str) ft_strlen_i(str)
-
+void			ft_pb(t_info *array, int count, t_flag flag, int col);
 void			ft_afficher(const t_global global, const t_info info, const char *path);
 void			ft_tiny_printf(const char set, char *buf, const char *s, ...);
 void			ft_got_path(char **argv, const t_flag flag, const int count);

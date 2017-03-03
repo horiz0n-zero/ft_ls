@@ -6,17 +6,11 @@
 /*   By: jeblonde <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/20 20:57:47 by jeblonde          #+#    #+#             */
-/*   Updated: 2017/03/03 03:19:12 by jeblonde         ###   ########.fr       */
+/*   Updated: 2017/03/03 05:02:53 by jeblonde         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-
-static void			ft_not_found(const char *str)
-{
-	write(2, "ls : ", 5);
-	perror(str);
-}
 
 static void				ft_fill(t_info *info, struct stat chat)
 {
@@ -26,6 +20,49 @@ static void				ft_fill(t_info *info, struct stat chat)
 	info->gid = chat.st_gid;
 	info->time = chat.st_mtime;
 	info->size = chat.st_size;
+}
+
+static void			ft_restrict_print(t_info *array, int count, t_flag flag)
+{
+	int				save;
+	struct winsize	size;
+	int				line;
+
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
+	save = count;
+	while (save-- > 0)
+	{
+		if (LENI(array->path) > flag.len)
+			flag.len = LENI(array->path);
+		array++;
+	}
+	line = size.ws_col / flag.len;
+	array = array - count;
+	ft_pb(array, count, flag, size.ws_col);
+}
+
+static void			ft_print_arguments(t_info *array, int count, t_flag f)
+{
+	int				first;
+
+	first = 1;
+	ft_restrict_print(array, count, f);
+	while (count-- > 0)
+	{
+		if (S_ISDIR(array->mode) && array->path[0] == '.' &&
+				array->path[1] == '.')
+		{
+			ft_launch(array->fullpath, f, 0);
+			continue ;
+		}
+		if (S_ISDIR(array->mode) && !(*array->path == '.' &&
+			(array->path[1] == '.' || !array->path[1])))
+		{
+			printf("\n");
+			ft_launch(array->fullpath, f, 1);
+		}
+		array++;
+	}
 }
 
 static void			ft_arguments(char **argv, t_flag flag, const int argc)
@@ -39,7 +76,8 @@ static void			ft_arguments(char **argv, t_flag flag, const int argc)
 	{
 		if (stat(*argv, &chat) == -1)
 		{
-			ft_not_found(*argv++);
+			write(1, "ls : ", 5);
+			perror(*argv++);
 			continue ;
 		}
 		array[index].path = ft_copy(*argv);
@@ -47,8 +85,7 @@ static void			ft_arguments(char **argv, t_flag flag, const int argc)
 		ft_fill(&array[index++], chat);
 	}
 	ft_sort(flag, array, index);
-	ft_print_directory(array, index, flag);
-	ft_open_r(array, index, flag);
+	ft_print_arguments(array, index, flag);
 }
 
 int					main(int argc, char **argv)
@@ -61,7 +98,11 @@ int					main(int argc, char **argv)
 	if (argc > 1)
 		path = ft_parse_param(++argv, &flag);
 	if (path != NULL)
+	{
 		ft_arguments(path, flag, argc);
+	}
 	else
+	{
 		ft_launch(".", flag, 0);
+	}
 }

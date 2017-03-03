@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memset_ll.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeblonde <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/24 03:59:18 by jeblonde          #+#    #+#             */
-/*   Updated: 2017/03/03 01:50:19 by jeblonde         ###   ########.fr       */
+/*   Created: 2017/03/03 14:01:09 by afeuerst          #+#    #+#             */
+/*   Updated: 2017/03/03 14:01:21 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdint.h>
-#include <unistd.h>
+#include "ft_ls.h"
 
 void		ft_memset_ll(void *const ptr, const int64_t value, size_t len)
 {

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_ls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeblonde <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/20 20:57:47 by jeblonde          #+#    #+#             */
-/*   Updated: 2017/03/03 05:02:53 by jeblonde         ###   ########.fr       */
+/*   Created: 2017/03/03 13:59:10 by afeuerst          #+#    #+#             */
+/*   Updated: 2017/03/03 13:59:12 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void				ft_fill(t_info *info, struct stat chat)
+static void			ft_fill(t_info *info, struct stat chat)
 {
 	info->mode = chat.st_mode;
 	info->link = chat.st_nlink;
@@ -90,8 +90,8 @@ static void			ft_arguments(char **argv, t_flag flag, const int argc)
 
 int					main(int argc, char **argv)
 {
-	t_flag		flag;
-	void		*path;
+	t_flag			flag;
+	void			*path;
 
 	path = NULL;
 	flag.self = 0;

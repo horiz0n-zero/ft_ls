@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:00 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 15:38:26 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 04:55:01 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@
 # include <stdint.h>
 # include <stdlib.h>
 # include <grp.h>
-// supr :
-# include <stdio.h>
+
+/** debug **/
+# define EXC_BAD_ACCESS 1
+# define KERN_PROTECTION_FAILURE 2
 
 typedef union	u_flag
 {
@@ -39,7 +41,7 @@ typedef union	u_flag
 		char	a:1;
 		char	r:1;
 		char	t:1;
-		int		len;
+		int32_t	len;
 		char	set;
 	};
 }				t_flag;
@@ -58,13 +60,15 @@ typedef struct	s_info
 
 typedef int (*f)(t_info a, t_info b);
 void			ft_sort(const t_flag flag, t_info *array, const int count);
-void			ft_print_l(t_info info);
+void			ft_print_l(t_info info, t_flag flag);
 typedef struct	s_global
 {
 	char		*buffer;
 	int			size;
 	int			len;
 }				t_global;
+
+void				print(const int set, const char *format, ...);
 
 void			ft_launch(const char *path, t_flag flag, const int set);
 int				ft_opend(const char *path, DIR *reper, t_flag flag, int n);

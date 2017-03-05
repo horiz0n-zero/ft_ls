@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 14:00:15 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 22:22:56 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/04 18:25:56 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,17 @@
 static void				ft_sort_reverse(t_info *array, int count)
 {
 	int					index;
+	int					last;
 	t_info				tmp;
 
+	last = count - 1;
 	index = 0;
 	count /= 2;
-	while (count-- > 0)
+	while (index < count)
 	{
 		tmp = *(array + index);
-		*(array + index++) = *(array + count);
-		*(array + count) = tmp;
+		*(array + index++) = *(array + last);
+		*(array + last--) = tmp;
 	}
 }
 
@@ -80,10 +82,7 @@ static void				ft_sort__shell(int count, t_info *array, f func)
 void			ft_sort(const t_flag flag, t_info *array, const int count)
 {
 	if (flag.t)
-	{
 		ft_sort__shell(count, array, ft_sort_time);
-		ft_sort__shell(count, array, ft_sort_ascii);
-	}
 	else
 		ft_sort__shell(count, array, ft_sort_ascii);
 	if (flag.r)

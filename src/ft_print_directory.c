@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:59:30 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 22:21:37 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 04:21:03 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,26 @@
 static void			ft_color(mode_t mode)
 {
 	if (S_ISBLK(mode))
-		printf("\e[1;32m");
+		print(0, "\e[1;32m");
 	else if (S_ISCHR(mode))
-		printf("\e[1;32m");
+		print(0, "\e[1;32m");
 	else if (S_ISDIR(mode))
-		printf("\033[1;34m");
+		print(0, "\033[1;34m");
 	else if (S_ISFIFO(mode))
-		printf("\e[1;35m");
+		print(0,"\e[1;35m");
 	else if (S_ISLNK(mode))
-		printf("\e[1;36m");
+		print(0,"\e[1;35m");
 	else if (S_ISREG(mode))
-		return ;
+	{
+		if ((mode & S_IXUSR) || (mode & S_IXGRP))
+			print(0, "\e[0;31m");
+		else
+			return ;
+	}
 	else if (S_ISSOCK(mode))
-		printf("\e[1;97m");
+		print(0, "\e[1;92m");
 	else
-		printf("\e[1;32m");
+		print(0, "\e[1;32m");
 }
 
 void				ft_pb(t_info *array, int count, t_flag flag, int col)
@@ -40,17 +45,14 @@ void				ft_pb(t_info *array, int count, t_flag flag, int col)
 		line = col / flag.len;
 	while (count-- > 0)
 	{
-		if (S_ISDIR(array->mode) && !(*array->path == '.' &&
-			(array->path[1] == '.' || !array->path[1])))
-			continue ;
 		if (flag.l)
-			ft_print_l(*array++);
+			ft_print_l(*array++, flag);
 		else
 		{
-			printf("%-*s ", flag.len, array++->path);
+			print(0, "%*s ", flag.len, array++->path);
 			if (--line <= 0)
 			{
-				printf("\n");
+				print(0, "\n");
 				if (col && flag.len)
 					line = col / flag.len;
 			}
@@ -61,8 +63,7 @@ void				ft_pb(t_info *array, int count, t_flag flag, int col)
 static void			ft_print_long(t_info *array, int count, t_flag flag)
 {
 	while (count-- > 0)
-		ft_print_l(*array++);
-	(void)flag;
+		ft_print_l(*array++, flag);
 }
 
 static void			ft_print_base(t_info *array, int count, t_flag flag)
@@ -73,15 +74,17 @@ static void			ft_print_base(t_info *array, int count, t_flag flag)
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	index = 0;
-	line = size.ws_col / flag.len;
+	if (size.ws_col && flag.len)
+		line = size.ws_col / flag.len;
 	while (count-- > 0)
 	{
 		ft_color(array->mode);
-		printf("%-*s", flag.len, array->path);
+		print(0, "%*s\e[37m", flag.len, array->path);
 		if (--line <= 0)
 		{
-			printf("\n");
-			line = size.ws_col / flag.len;
+			print(0, "\n");
+			if (size.ws_col && flag.len)
+				line = size.ws_col / flag.len;
 		}
 		array++;
 	}

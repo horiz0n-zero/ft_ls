@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:59:10 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 22:23:02 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 03:36:34 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,41 +27,63 @@ static void			ft_restrict_print(t_info *array, int count, t_flag flag)
 	int				save;
 	struct winsize	size;
 	int				line;
+	t_info			new_array[count];
+	int				index;
 
+	index = 0;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &size);
 	save = count;
 	while (save-- > 0)
 	{
+		if (S_ISDIR(array->mode))
+		{
+			array++;
+			continue ;
+		}
+		if (S_ISLNK(array->mode))
+		{
+			array++;
+			continue ;
+		}
 		if (LENI(array->path) > flag.len)
 			flag.len = LENI(array->path) + 1;
-		array++;
+		new_array[index++] = *array++;
 	}
 	if (flag.len != 0 && size.ws_col != 0)
 		line = size.ws_col / flag.len;
 	array = array - count;
-	ft_pb(array, count, flag, size.ws_col);
+	ft_pb(new_array, index, flag, size.ws_col);
 }
 
-static void			ft_print_arguments(t_info *array, int count, t_flag f)
+static void			ft_print_arguments(t_info *array, int c, t_flag f, int s)
 {
 	int				first;
+	char			buffer[8096];
 
+	ft_memset_ll(buffer, 0, 1012);
 	first = 1;
-	ft_restrict_print(array, count, f);
-	while (count-- > 0)
+	ft_restrict_print(array, c, f);
+	while (c-- > 0)
 	{
-		if (S_ISDIR(array->mode) && array->path[0] == '.')
+		if (S_ISDIR(array->mode))
 		{
-			ft_launch(array->fullpath, f, 0);
-			continue ;
-		}
-		if (S_ISDIR(array->mode) && !(*array->path == '.' &&
-			(array->path[1] == '.' || !array->path[1])))
-		{
-			printf("\n");
+			if (!first || c > 1)
+				print(0, "\n\e[1;36m%s :\n\e[1;37m", array->fullpath);
+			else
+				first = 0;
 			ft_launch(array->fullpath, f, 1);
 		}
+		if (S_ISLNK(array->mode))
+		{
+			if (readlink(array->fullpath, buffer, 8096) != -1)
+			{
+				if (!first && s > 0)
+					print(0, "\n\e[1;35m%s :\n\e[1;37m", array++->fullpath);
+				ft_launch(buffer, f, 1);
+			}
+		}
 		array++;
+		first = 0;
 	}
 }
 
@@ -74,10 +96,10 @@ static void			ft_arguments(char **argv, t_flag flag, const int argc)
 	index = 0;
 	while (*argv)
 	{
-		if (stat(*argv, &chat) == -1)
+		if (lstat(*argv, &chat) == -1)
 		{
-			write(1, "ls : ", 5);
-			perror(*argv++);
+			print(0, "ls : No such file or directory\n");
+			// perror(*argv++); todo : a remplacer
 			continue ;
 		}
 		array[index].path = ft_copy(*argv);
@@ -85,7 +107,7 @@ static void			ft_arguments(char **argv, t_flag flag, const int argc)
 		ft_fill(&array[index++], chat);
 	}
 	ft_sort(flag, array, index);
-	ft_print_arguments(array, index, flag);
+	ft_print_arguments(array, index, flag, index);
 }
 
 int					main(int argc, char **argv)
@@ -96,11 +118,12 @@ int					main(int argc, char **argv)
 	path = NULL;
 	flag.self = 0;
 	flag.set = 1;
-	printf("\e[1m");
+	print(0, "\e[1m");
 	if (argc > 1)
 		path = ft_parse_param(++argv, &flag);
 	if (path != NULL)
 		ft_arguments(path, flag, argc);
 	else
 		ft_launch(".", flag, 1);
+	print(1, "");
 }

@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:57 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 22:48:57 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 04:14:45 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void				ft_unfind(const char *path)
 {
-	printf("%s no such file or directory\n", path);
+	print(0, "%s no such file or directory\n", path);
 }
 
 static void				ft_fill(t_info *info, struct stat chat)
@@ -30,7 +30,7 @@ static void				ft_fill(t_info *info, struct stat chat)
 void					ft_launch(const char *path, t_flag flag, const int set)
 {
 	DIR					*reper;
-	int					size;
+	static int			size;
 
 	size = 2;
 	reper = opendir(path);
@@ -42,7 +42,12 @@ void					ft_launch(const char *path, t_flag flag, const int set)
 	if (set)
 		;
 	else
-		printf("\n\n\e[34m%s :\n\e[37m", path);
+	{
+		if (!flag.l)
+			print(0, "\n\n\e[34m%s :\n\e[37m", path);
+		else
+			print(0, "\n\e[34m%s :\n\e[37m", path);
+	}
 	while (ft_opend(path, reper, flag, size))
 	{
 		size *= 2;
@@ -58,9 +63,7 @@ void					ft_open_r(const t_info *array, int n, t_flag f)
 	{
 		if (S_ISDIR(array->mode) && !(*array->path == '.' &&
 			(array->path[1] == '.' || !array->path[1])))
-		{
 			ft_launch(array->fullpath, f, 0);
-		}
 		array++;
 	}
 }
@@ -73,11 +76,12 @@ int						ft_opend(const char *path, DIR *rep, t_flag flag, int n)
 	int				index;
 
 	index = 0;
+	flag.len = 0;
 	while ((tmp = readdir(rep)))
 	{
-		if (stat(ft_stc_sstrjoin(path, tmp->d_name), &chat) == -1)
+		if (lstat(ft_stc_sstrjoin(path, tmp->d_name), &chat) == -1)
 		{
-			printf("%s : Permission denied\n", path);
+			print(0, "%s : Permission denied\n", path);
 			continue ;
 		}
 		if (*tmp->d_name == '.' && !flag.a)

@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:59:30 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:21:03 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:03:04 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void				ft_pb(t_info *array, int count, t_flag flag, int col)
 			ft_print_l(*array++, flag);
 		else
 		{
-			print(0, "%*s ", flag.len, array++->path);
+			print(0, "%* ", flag.len, array++->path);
 			if (--line <= 0)
 			{
 				print(0, "\n");
@@ -79,7 +79,7 @@ static void			ft_print_base(t_info *array, int count, t_flag flag)
 	while (count-- > 0)
 	{
 		ft_color(array->mode);
-		print(0, "%*s\e[37m", flag.len, array->path);
+		print(0, "%*\e[37m", flag.len, array->path);
 		if (--line <= 0)
 		{
 			print(0, "\n");

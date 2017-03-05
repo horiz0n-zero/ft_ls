@@ -6,71 +6,77 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/04 23:59:54 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:50:52 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:29:22 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "print.h"
 #include "ft_ls.h"
 
-static char			*ft_arg(char *str, char *buf, char *ptr, va_list *ar)
+static char			*ft_nnumber(char *const buffer, char *ptr, va_list *args)
 {
-	char			*input;
+	int				count;
+	char			*str;
+	int				len;
 
-	if (*str == '*')
-		ptr = ft_star(buf, ptr, ar);
-	else if (*str == 's' && *(str - 1) != '*')
+	len = 0;
+	count = va_arg(*args, int);
+	str = ft_stc_number(va_arg(*args, int));
+	while (*str)
 	{
-		input = va_arg(*ar, char*);
-		while (*input)
-		{
-			if (ptr >= (buf + 8096))
-				ft_clean(buf);
-			*ptr++ = *input++;
-		}
-		str++;
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
+		*ptr++ = *str++;
+		len++;
 	}
-	else if (*str == 'd')
-		ptr = ft_number(buf, ptr, ar);
+	count = count - len;
+	while (count-- > 0)
+	{
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
+		*ptr++ = ' ';
+	}
 	return (ptr);
 }
 
-static char				*ft_push(const char *str, char *buf, char *ptr, va_list *ar)
+static char			*ft_push(const char *s, char *const b, char *p, va_list *a)
 {
-	while (*str)
+	while (*s)
 	{
-		if (ptr >= (buf + 8096))
+		if (*s == '%')
 		{
-			write(1, buf, 8096);
-			ft_memset_ll(buf, 0, 1013);
-			ptr = buf;
-		}
-		if (*str == '%')
-		{
-			ptr = ft_arg((char*)++str, buf, ptr, ar);
-			if (*--str == '*')
-				str += 2;
-			else if (*str == 's')
-				str++;
-			else if (*str == 'd')
-				str++;
+			if (*++s == '*')
+				p = ft_star(b, p, a);
+			else if (*s == 's')
+				p = ft_push_str(b, p, a);
+			else if (*s == 'd')
+				p = ft_number(b, p, a);
+			else if (*s == '#')
+				p = ft_nnumber(b, p, a);
+			else if (*s & 48)
+				p = ft_nstar(b, p, a, *s - 48);
+			s++;
 		}
 		else
-			*ptr++ = *str++;
+		{
+			if (p >= (b + BUFFY))
+				p = ft_clean(b);
+			*p++ = *s++;
+		}
 	}
-	return (ptr);
+	return (p);
 }
 
 void				print(const int set, const char *format, ...)
 {
-	static char		buffer[8104];
+	static char		buffer[BUFFY + 8];
 	static char		*progress = NULL;
 	va_list			args;
 
 	va_start(args, format);
 	if (progress == NULL)
 	{
-		ft_memset_ll(buffer, 0, 1013);
+		ft_memset_ll(buffer, 0, BUFFY/8 + 1);
 		progress = buffer;
 	}
 	progress = ft_push(format, buffer, progress, &args);
@@ -78,7 +84,7 @@ void				print(const int set, const char *format, ...)
 	{
 		write(1, buffer, ft_strlen_s(buffer));
 		progress = buffer;
-		ft_memset_ll(buffer, 0, 1013);
+		ft_memset_ll(buffer, 0, BUFFY/8 + 1);
 	}
 	va_end(args);
 }

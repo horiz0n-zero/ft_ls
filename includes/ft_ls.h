@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:00 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:55:01 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:33:01 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,6 @@
 # include <stdint.h>
 # include <stdlib.h>
 # include <grp.h>
-
-/** debug **/
-# define EXC_BAD_ACCESS 1
-# define KERN_PROTECTION_FAILURE 2
 
 typedef union	u_flag
 {
@@ -80,6 +76,7 @@ char			*ft_copy(const char *str);
 size_t			ft_strlen_s(const char *str);
 int				ft_strlen_i(const char *str);
 char			*ft_stc_sstrjoin(const char *s1, const char *s2);
+void			ft_free(t_info *array, int count);
 
 # define LENS(str) ft_strlen_s(str)
 # define LENI(str) ft_strlen_i(str)

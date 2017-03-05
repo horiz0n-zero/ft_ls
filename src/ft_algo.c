@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:57 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:14:45 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:43:10 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,6 @@ int						ft_opend(const char *path, DIR *rep, t_flag flag, int n)
 	ft_print_directory(array, index, flag);
 	if (flag._r)
 		ft_open_r(array, index, flag);
+	ft_free(array, index);
 	return (0);
 }

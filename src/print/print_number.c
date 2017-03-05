@@ -6,17 +6,22 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 01:05:38 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:51:37 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:20:53 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "print.h"
 #include "ft_ls.h"
 
-static char			*ft_get(int number, int number_, char *ptr)
+char				*ft_stc_number(int number)
 {
-	if (number < 0)
-		(*ptr++ = '-') && (number = -number) && (number_ = number);
+	int				save;
+	static char		buffer[24];
+	char			*ptr;
+
+	ptr = buffer;
+	save = number;
+	ft_memset_ll(buffer, 0, 3);
 	if (number == 0)
 		*ptr++ = '0';
 	while (number)
@@ -24,32 +29,24 @@ static char			*ft_get(int number, int number_, char *ptr)
 		ptr++;
 		number /= 10;
 	}
-	while (number_)
+	while (save)
 	{
-		*--ptr = number_ % 10 + 48;
-		number_ /= 10;
+		*--ptr = save % 10 + 48;
+		save /= 10;
 	}
-	return (ptr);
+	return (buffer);
 }
 
-char				*ft_number(char *buffy, char *ptr, va_list *args)
+char				*ft_number(char *const buffer, char *ptr, va_list *args)
 {
-	static char		buffer[8096];
-	char			*ptr_buffer;
-	int				number;
+	char	*str;
 
-	ft_memset_ll(buffer, 0, 1013);
-	number = va_arg(*args, int);
-	ptr_buffer = ft_get(number, number, buffer);
-	while (*ptr_buffer)
+	str = ft_stc_number(va_arg(*args, int));
+	while (*str)
 	{
-		if (ptr >= (buffy + 8096))
-		{
-			write(1, buffy, 8096);
-			ft_memset_ll(buffy, 0, 1013);
-			ptr_buffer = buffy;
-		}
-		*ptr++ = *ptr_buffer++;
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
+		*ptr++ = *str++;
 	}
 	return (ptr);
 }

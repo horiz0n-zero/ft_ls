@@ -6,13 +6,13 @@
 #    By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/03 13:58:17 by afeuerst          #+#    #+#              #
-#    Updated: 2017/03/05 03:35:11 by afeuerst         ###   ########.fr        #
+#    Updated: 2017/03/05 19:46:54 by afeuerst         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ft_ls
 
-FLAGS = -Wall -Wextra -Werror -fsanitize=address -std=c99 -g -O0
+FLAGS = -Wall -Wextra -Werror -std=c99 -O2
 
 C_SOURCES_SRC = ./ft_ls.c \
 				./src/check.c \
@@ -20,9 +20,11 @@ C_SOURCES_SRC = ./ft_ls.c \
 				./src/ft_print_directory.c \
 				./src/ft_print_long.c \
 				./src/ft_sort__shell.c \
+				./src/ft_free.c \
 				./src/print/ft_star.c \
 				./src/print/print.c \
 				./src/print/print_number.c \
+				./src/print/print_string.c \
 				./src/utility/ft_memset_ll.c \
 				./src/utility/ft_stc_strjoin.c \
 				./src/utility/ft_string.c

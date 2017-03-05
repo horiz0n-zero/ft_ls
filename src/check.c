@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:36 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/03 13:58:39 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:02:12 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static void		ft_exit(const char c)
 {
-	write(1, "ls: illegal option -- ", sizeof("ls: illegal option -- "));
-	write(1, &c, 1);
-	write(1, "\nusage: ls [-altrR] [file ...]\n", 31);
+	write(2, "ls: illegal option -- ", sizeof("ls: illegal option -- "));
+	write(2, &c, 1);
+	write(2, "\nusage: ls [-altrR] [file ...]\n", 31);
 	exit(1);
 }
 

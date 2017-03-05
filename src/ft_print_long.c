@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:59:48 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:15:38 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:50:13 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static void					ft_color(mode_t mode)
 	else if (S_ISCHR(mode))
 		print(0, "\e[1;32m");
 	else if (S_ISDIR(mode))
-		print(0, "\033[1;34m");
+		print(0, "\e[1;34m");
 	else if (S_ISFIFO(mode))
 		print(0, "\e[1;35m");
 	else if (S_ISLNK(mode))
@@ -96,11 +96,11 @@ void					ft_print_l(t_info info, t_flag flag)
 	ft_memset_ll(buffer, 0, 1012);
 	ft_file_type(info.mode);
 	ft_permission(info.mode);
-	print(0, " %3d %s ", info.link, getpwuid(info.uid)->pw_name);
-	print(0, "%7s %6lld", getgrgid(info.gid)->gr_name, info.size);
+	print(0, " %# %s ", 2, info.link, getpwuid(info.uid)->pw_name);
+	print(0, "%7 %#", getgrgid(info.gid)->gr_name, 5, info.size);
 	print(0, " %s ", ft_time(ctime(&info.time)));
 	ft_color(info.mode);
-	print(0, "%*s\e[1;37m", flag.len, info.path);
+	print(0, "%*\e[1;37m", flag.len, info.path);
 	if (S_ISLNK(info.mode))
 	{
 		if (readlink(info.fullpath, buffer, 8096) != -1)

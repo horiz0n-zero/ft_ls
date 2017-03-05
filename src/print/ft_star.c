@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 01:02:47 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 04:51:13 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/05 19:11:32 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,34 +15,56 @@
 
 char			*ft_clean(char * const buffer)
 {
-	write(1, buffer, 8096);
-	ft_memset_ll(buffer, 0, 1013);
+	write(1, buffer, BUFFY);
+	ft_memset_ll(buffer, 0, BUFFY/8 + 1);
 	return (buffer);
 }
 
-char			*ft_star(char *buf, char *ptr, va_list *args)
+char			*ft_nstar(char *const buffer, char *ptr, va_list *args, int n)
 {
-	int				count;
-	int				len;
-	char			*str;
+	char		*str;
+	int			len;
 
-	count = va_arg(*args, int32_t);
 	len = 0;
 	str = va_arg(*args, char*);
-	if (str == NULL)
-		return (NULL);
 	while (*str)
 	{
 		len++;
-		if (ptr >= (buf + 8096))
-			ptr = ft_clean(buf);
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
+		*ptr++ = *str++;
+	}
+	n = n - len;
+	while (n-- > 0)
+	{
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
+		*ptr++ = ' ';
+	}
+	return (ptr);
+}
+
+char			*ft_star(char *const buffer, char *ptr, va_list *args)
+{
+	int			count;
+	char		*str;
+	int			len;
+
+	len = 0;
+	count = va_arg(*args, int);
+	str = va_arg(*args, char*);
+	while (*str)
+	{
+		len++;
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
 		*ptr++ = *str++;
 	}
 	count = count - len;
 	while (count-- > 0)
 	{
-		if (ptr >= (buf + 8096))
-			ptr = ft_clean(buf);
+		if (ptr >= (buffer + BUFFY))
+			ptr = ft_clean(buffer);
 		*ptr++ = ' ';
 	}
 	return (ptr);

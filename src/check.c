@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:36 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 19:02:12 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/11 01:18:55 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void		ft_get_param(const char *arguments, t_flag *const flag)
 		else if (*arguments == 'a')
 			flag->a = 1;
 		else if (*arguments == 'R')
-			flag->_r = 1;
+			flag->r_r = 1;
 		else if (*arguments == 'r')
 			flag->r = 1;
 		else
@@ -48,10 +48,14 @@ char			**ft_parse_param(char **argv, t_flag *const flag)
 	{
 		if (**argv == '-')
 		{
-			if (*(*argv + 1) == '-')
+			if (*(*argv + 1) == '-' && *(*argv + 2) == 0 && *(argv + 1))
 				return (++argv);
+			else if (*(*argv + 1) == '-' && *(*argv + 2) == 0)
+				return (NULL);
 			else if (*(*argv + 1) == '\0')
 				return (argv);
+			else if (*((*argv) + 1) == '-' && *((*argv) + 2) != '\0')
+				ft_exit('-');
 			ft_get_param(*argv, flag);
 			argv++;
 		}

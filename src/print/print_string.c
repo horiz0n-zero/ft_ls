@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 18:20:27 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 19:11:47 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/06 04:27:26 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char			*ft_push_str(char *const buffer, char *progress, va_list *args)
 	char		*str;
 
 	str = va_arg(*args, char*);
+	if (str == (void*)0)
+		return (progress);
 	while (*str)
 	{
 		if (progress >= (buffer + BUFFY))

@@ -6,7 +6,7 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/04 23:59:54 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 19:29:22 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/10 21:24:43 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void				print(const int set, const char *format, ...)
 	va_start(args, format);
 	if (progress == NULL)
 	{
-		ft_memset_ll(buffer, 0, BUFFY/8 + 1);
+		ft_memset_ll(buffer, 0, BUFFY / 8 + 1);
 		progress = buffer;
 	}
 	progress = ft_push(format, buffer, progress, &args);
@@ -84,7 +84,7 @@ void				print(const int set, const char *format, ...)
 	{
 		write(1, buffer, ft_strlen_s(buffer));
 		progress = buffer;
-		ft_memset_ll(buffer, 0, BUFFY/8 + 1);
+		ft_memset_ll(buffer, 0, BUFFY / 8 + 1);
 	}
 	va_end(args);
 }

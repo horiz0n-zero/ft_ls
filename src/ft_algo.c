@@ -6,26 +6,11 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 13:58:57 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 19:43:10 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/11 02:28:04 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-
-static void				ft_unfind(const char *path)
-{
-	print(0, "%s no such file or directory\n", path);
-}
-
-static void				ft_fill(t_info *info, struct stat chat)
-{
-	info->mode = chat.st_mode;
-	info->link = chat.st_nlink;
-	info->uid = chat.st_uid;
-	info->gid = chat.st_gid;
-	info->time = chat.st_mtime;
-	info->size = chat.st_size;
-}
 
 void					ft_launch(const char *path, t_flag flag, const int set)
 {
@@ -34,21 +19,19 @@ void					ft_launch(const char *path, t_flag flag, const int set)
 
 	size = 2;
 	reper = opendir(path);
+	flag.total = 0;
+	flag.bytes = 0;
+	flag.link = 0;
+	flag.size = 0;
 	if (reper == NULL)
 	{
-		ft_unfind(path);
+		print(1, "ls : %s ", path);
+		perror(NULL);
 		return ;
 	}
-	if (set)
-		;
-	else
-	{
-		if (!flag.l)
-			print(0, "\n\n\e[34m%s :\n\e[37m", path);
-		else
-			print(0, "\n\e[34m%s :\n\e[37m", path);
-	}
-	while (ft_opend(path, reper, flag, size))
+	if (!set)
+		print(0, "\n\e[34m%s :\n\e[37m", path);
+	while (ft_go(path, reper, flag, size))
 	{
 		size *= 2;
 		closedir(reper);
@@ -61,6 +44,12 @@ void					ft_open_r(const t_info *array, int n, t_flag f)
 {
 	while (n-- > 0)
 	{
+		f.total = 0;
+		f.bytes = 0;
+		f.link = 0;
+		f.size = 0;
+		f.group = 0;
+		f.user = 0;
 		if (S_ISDIR(array->mode) && !(*array->path == '.' &&
 			(array->path[1] == '.' || !array->path[1])))
 			ft_launch(array->fullpath, f, 0);
@@ -68,7 +57,28 @@ void					ft_open_r(const t_info *array, int n, t_flag f)
 	}
 }
 
-int						ft_opend(const char *path, DIR *rep, t_flag flag, int n)
+int						ft_process(t_flag flag, t_info *array, int index)
+{
+	ft_sort(flag, array, index);
+	if (flag.l)
+		print(0, "\e[1;34m[ total : %d ] [ count: %d ] [ Bytes : %d ]\e[1;37m\n"
+				, flag.total, index, flag.bytes);
+	ft_print_directory(array, index, flag);
+	if (flag.r_r)
+		ft_open_r(array, index, flag);
+	ft_free(array, index);
+	return (0);
+}
+
+static void				ft_no(t_info *array, char *p, char *s, struct stat chat)
+{
+	array->path = ft_copy(s);
+	array->fullpath = ft_sstrjoin(p, s);
+	array->dev = chat.st_rdev;
+	ft_fill(array, chat);
+}
+
+int						ft_go(const char *p, DIR *r, t_flag f, int n)
 {
 	t_info			array[n];
 	struct dirent	*tmp;
@@ -76,28 +86,23 @@ int						ft_opend(const char *path, DIR *rep, t_flag flag, int n)
 	int				index;
 
 	index = 0;
-	flag.len = 0;
-	while ((tmp = readdir(rep)))
+	f.len = 0;
+	while ((tmp = readdir(r)))
 	{
-		if (lstat(ft_stc_sstrjoin(path, tmp->d_name), &chat) == -1)
+		if (lstat(ft_stc_sstrjoin(p, tmp->d_name), &chat) == -1)
 		{
-			print(0, "%s : Permission denied\n", path);
+			print(1, "ls : ");
+			perror(NULL);
 			continue ;
 		}
-		if (*tmp->d_name == '.' && !flag.a)
+		if (*tmp->d_name == '.' && !f.a)
 			continue ;
-		array[index].path = ft_copy(tmp->d_name);
-		array[index].fullpath = ft_sstrjoin(path, tmp->d_name);
-		ft_fill(&array[index], chat);
-		if (LENI(array[index].path) > flag.len)
-			flag.len = LENI(array[index].path) + 1;
+		ft_no(array + index, (char*)p, tmp->d_name, chat);
+		ft_thks(&f, &array[index]);
+		f.total += chat.st_blocks;
+		f.bytes += chat.st_size;
 		if (++index >= n)
 			return (1);
 	}
-	ft_sort(flag, array, index);
-	ft_print_directory(array, index, flag);
-	if (flag._r)
-		ft_open_r(array, index, flag);
-	ft_free(array, index);
-	return (0);
+	return (ft_process(f, array, index));
 }

@@ -6,17 +6,17 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 14:00:15 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/04 18:25:56 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/06 20:33:04 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void				ft_sort_reverse(t_info *array, int count)
+static void		ft_sort_reverse(t_info *array, int count)
 {
-	int					index;
-	int					last;
-	t_info				tmp;
+	int			index;
+	int			last;
+	t_info		tmp;
 
 	last = count - 1;
 	index = 0;
@@ -29,7 +29,7 @@ static void				ft_sort_reverse(t_info *array, int count)
 	}
 }
 
-static int				ft_sort_ascii(t_info a, t_info b)
+static int		ft_sort_ascii(t_info a, t_info b)
 {
 	while (*a.path || *b.path)
 	{
@@ -46,17 +46,18 @@ static int				ft_sort_ascii(t_info a, t_info b)
 	return (0);
 }
 
-static int				ft_sort_time(t_info a, t_info b)
+static int		ft_sort_time(t_info a, t_info b)
 {
 	return (a.time < b.time);
 }
 
-static void				ft_sort__shell(int count, t_info *array, f func)
+static void		ft_sort__shell(int count, t_info *array, \
+		int (*func)(t_info a, t_info b))
 {
-	int				i;
-	int				j;
-	int				space;
-	t_info			tmp;
+	int			i;
+	int			j;
+	int			space;
+	t_info		tmp;
 
 	space = count / 2;
 	i = 0;

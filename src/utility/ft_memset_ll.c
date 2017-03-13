@@ -6,11 +6,20 @@
 /*   By: afeuerst <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/05 02:57:01 by afeuerst          #+#    #+#             */
-/*   Updated: 2017/03/05 02:58:51 by afeuerst         ###   ########.fr       */
+/*   Updated: 2017/03/06 00:37:13 by afeuerst         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+void			ft_memset(void *ptr, const int8_t value, size_t len)
+{
+	int8_t		*str;
+
+	str = ptr;
+	while (len-- > 0)
+		*str++ = value;
+}
 
 void			ft_memset_ll(void *ptr, const int64_t value, size_t len)
 {
